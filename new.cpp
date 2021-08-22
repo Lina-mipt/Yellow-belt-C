@@ -75,6 +75,26 @@ bool operator < (const Date& first, const Date& second)
 	return false; 
 }
 
+bool operator > (const Date& first, const Date& second) 
+{
+	if(first.year > second.year) 
+		return true; 
+	else 
+		return false; 
+	
+	if(first.month > second.month) 
+		return true; 
+	else 
+		return false; 
+
+	if(first.day > second.day) 
+		return true; 
+	else 
+		return false; 
+
+	return false; 
+}
+
 bool operator == (const Date& first, const Date& second) 
 { 
 	return ((first.year == second.year) && (first.month == second.month) && (first.day == second.day)); 
@@ -94,11 +114,6 @@ bool operator < (const Earn& first, const Earn& second)
 	}
 		return false;
 } 
-
-bool operator == (const Earn& first, const Earn& second) 
-{ 
-	return (first.first_date == second.first_date) && (first.last_date == second.last_date);   
-}
 
 int operator + (const Earn& first, const Earn& second) 
 {
@@ -135,13 +150,19 @@ class MyBudget
 					return rec.first_date < first_d;
 				});
 			Date second_d = new_query.second_date; 
-			auto second = find_if(rbegin(my_budget_), rend(my_budget_), [second_d](const Earn& rec)
+			auto second = find_if(begin(my_budget_), end(my_budget_), [second_d](const Earn& rec)
 				{
-					return rec.last_date < second_d; 
+					return rec.last_date > second_d; 
 				});
+			
+			auto Sum = [](int sum, Earn tmp) 
+			{
+				return move(sum) + tmp.sum; 
+			}; 
 
-			long sum = accumulate(first, next(second), 0); 
-			return sum; 
+			long sum = accumulate(first, second, 0, Sum);
+
+			return sum;
 		}
 }; 
 
